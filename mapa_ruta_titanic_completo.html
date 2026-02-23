@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Ruta Completo — Proyecto Titanic | CRISP-DM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           VARIABLES Y RESET
+           ========================================================================== */
+        :root {
+            --color-black: #0a0a0a;
+            --color-black-light: #111111;
+            --color-black-lighter: #1a1a1a;
+            --color-white: #ffffff;
+            --color-gray: #888888;
+            --color-gray-light: #cccccc;
+            --color-gray-dark: #333333;
+            --color-accent: #00d4ff;
+            --color-accent-rgb: 0, 212, 255;
+            --color-phase-1: #0077b6;
+            --color-phase-2: #f39c12;
+            --color-phase-3: #9b59b6;
+            --color-phase-4: #27ae60;
+            --color-phase-5: #e74c3c;
+            --color-phase-6: #f1c40f;
+            --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            --spacing-3xl: 64px;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--color-black);
+            color: var(--color-white);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ==========================================================================
+           BACKGROUND EFFECTS
+           ========================================================================== */
+        .background-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .background-effects::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 35%),
+                radial-gradient(circle at 50% 50%, rgba(var(--color-accent-rgb), 0.015) 0%, transparent 60%);
+            animation: backgroundShift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes backgroundShift {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.05); opacity: 1; }
+        }
+
+        .grid-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100px 100px;
+        }
+
+        /* ==========================================================================
+           CONTAINER
+           ========================================================================== */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        /* ==========================================================================
+           HERO HEADER
+           ========================================================================== */
+        .hero {
+            text-align: center;
+            padding: var(--spacing-3xl) 0;
+            margin-bottom: var(--spacing-3xl);
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+        }
+
+        .hero__badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--color-gray-light);
+            margin-bottom: var(--spacing-lg);
+            animation: fadeInDown 0.8s ease forwards;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero__title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: var(--spacing-md);
+            animation: titleReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            background: linear-gradient(135deg, var(--color-white), var(--color-gray-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero__title span {
+            color: var(--color-accent);
+            -webkit-text-fill-color: var(--color-accent);
+        }
+
+        @keyframes titleReveal {
+            from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        .hero__subtitle {
+            font-size: 1.25rem;
+            color: var(--color-gray);
+            font-weight: 300;
+            max-width: 700px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s 0.3s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==========================================================================
+           NAVIGATION
+           ========================================================================== */
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-3xl);
+            padding: var(--spacing-md);
+            background: rgba(255,255,255,0.02);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255,255,255,0.05);
+            animation: fadeInUp 0.8s 0.4s ease forwards;
+            opacity: 0;
+        }
+
+        .nav__item {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-sm);
+            color: var(--color-gray-light);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            text-decoration: none;
+        }
+
+        .nav__item:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.2);
+            color: var(--color-white);
+            transform: translateY(-2px);
+        }
+
+        .nav__item--1:hover { border-color: var(--color-phase-1); color: var(--color-phase-1); }
+        .nav__item--2:hover { border-color: var(--color-phase-2); color: var(--color-phase-2); }
+        .nav__item--3:hover { border-color: var(--color-phase-3); color: var(--color-phase-3); }
+        .nav__item--4:hover { border-color: var(--color-phase-4); color: var(--color-phase-4); }
+        .nav__item--5:hover { border-color: var(--color-phase-5); color: var(--color-phase-5); }
+        .nav__item--6:hover { border-color: var(--color-phase-6); color: var(--color-phase-6); }
+
+        /* ==========================================================================
+           PHASE SECTIONS
+           ========================================================================== */
+        .phase {
+            margin-bottom: var(--spacing-3xl);
+            padding: var(--spacing-2xl);
+            background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-lg);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-normal);
+        }
+
+        .phase:hover {
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .phase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .phase--1::before { background: linear-gradient(180deg, var(--color-phase-1), #00b4d8); }
+        .phase--2::before { background: linear-gradient(180deg, var(--color-phase-2), #e67e22); }
+        .phase--3::before { background: linear-gradient(180deg, var(--color-phase-3), #8e44ad); }
+        .phase--4::before { background: linear-gradient(180deg, var(--color-phase-4), #2ecc71); }
+        .phase--5::before { background: linear-gradient(180deg, var(--color-phase-5), #c0392b); }
+        .phase--6::before { background: linear-gradient(180deg, var(--color-phase-6), #f39c12); }
+
+        .phase__header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .phase__number {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-white);
+            flex-shrink: 0;
+        }
+
+        .phase--1 .phase__number { background: linear-gradient(135deg, var(--color-phase-1), #00b4d8); }
+        .phase--2 .phase__number { background: linear-gradient(135deg, var(--color-phase-2), #e67e22); }
+        .phase--3 .phase__number { background: linear-gradient(135deg, var(--color-phase-3), #8e44ad); }
+        .phase--4 .phase__number { background: linear-gradient(135deg, var(--color-phase-4), #2ecc71); }
+        .phase--5 .phase__number { background: linear-gradient(135deg, var(--color-phase-5), #c0392b); }
+        .phase--6 .phase__number { background: linear-gradient(135deg, var(--color-phase-6), #f39c12); color: var(--color-black); }
+
+        .phase__title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .phase__description {
+            color: var(--color-gray);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-md);
+            background: rgba(255,255,255,0.02);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid rgba(255,255,255,0.1);
+        }
+
+        /* ==========================================================================
+           SUBSECTIONS
+           ========================================================================== */
+        .subsection {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .subsection__title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-gray-light);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .subsection__title::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--color-accent);
+            border-radius: 50%;
+        }
+
+        /* ==========================================================================
+           ITEMS GRID
+           ========================================================================== */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-sm);
+            transition: var(--transition-normal);
+        }
+
+        .item:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: rgba(255,255,255,0.12);
+            transform: translateX(4px);
+        }
+
+        .item__icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius-sm);
+        }
+
+        .item__content {
+            flex: 1;
+        }
+
+        .item__title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-white);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .item__text {
+            font-size: 0.8rem;
+            color: var(--color-gray);
+            line-height: 1.5;
+        }
+
+        /* ==========================================================================
+           CODE BLOCKS
+           ========================================================================== */
+        .code-block {
+            background: var(--color-black-lighter);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--color-accent);
+        }
+
+        /* ==========================================================================
+           TAGS
+           ========================================================================== */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .tag {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            color: var(--color-gray-light);
+        }
+
+        /* ==========================================================================
+           MATRIX GRID
+           ========================================================================== */
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            max-width: 600px;
+            margin: var(--spacing-xl) auto;
+        }
+
+        .matrix-cell {
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            text-align: center;
+            transition: var(--transition-normal);
+        }
+
+        .matrix-cell:hover {
+            transform: scale(1.02);
+        }
+
+        .matrix-cell--tp {
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.2), rgba(39, 174, 96, 0.1));
+            border: 2px solid rgba(39, 174, 96, 0.5);
+        }
+
+        .matrix-cell--tn {
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.2), rgba(39, 174, 96, 0.1));
+            border: 2px solid rgba(39, 174, 96, 0.5);
+        }
+
+        .matrix-cell--fp {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(231, 76, 60, 0.1));
+            border: 2px solid rgba(231, 76, 60, 0.5);
+        }
+
+        .matrix-cell--fn {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(231, 76, 60, 0.1));
+            border: 2px solid rgba(231, 76, 60, 0.5);
+        }
+
+        .matrix-cell__icon {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .matrix-cell__label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .matrix-cell__desc {
+            font-size: 0.75rem;
+            color: var(--color-gray);
+        }
+
+        /* ==========================================================================
+           VISUALIZATIONS LIST
+           ========================================================================== */
+        .viz-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .viz-item {
+            padding: var(--spacing-md);
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-sm);
+            transition: var(--transition-normal);
+        }
+
+        .viz-item:hover {
+            border-color: var(--color-accent);
+            transform: translateY(-2px);
+        }
+
+        .viz-item__title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-accent);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .viz-item__desc {
+            font-size: 0.8rem;
+            color: var(--color-gray);
+            line-height: 1.5;
+        }
+
+        /* ==========================================================================
+           FOOTER
+           ========================================================================== */
+        .footer {
+            text-align: center;
+            padding: var(--spacing-3xl) 0;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            margin-top: var(--spacing-3xl);
+        }
+
+        .footer__text {
+            color: var(--color-gray);
+            font-size: 0.9rem;
+        }
+
+        .footer__accent {
+            color: var(--color-accent);
+        }
+
+        /* ==========================================================================
+           DOWNLOAD BUTTON
+           ========================================================================== */
+        .download-section {
+            text-align: center;
+            padding: var(--spacing-2xl);
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md) var(--spacing-2xl);
+            background: linear-gradient(135deg, var(--color-accent), #0099cc);
+            color: var(--color-black);
+            border: none;
+            border-radius: 100px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            text-decoration: none;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+        }
+
+        /* ==========================================================================
+           PRINT STYLES
+           ========================================================================== */
+        @media print {
+            body {
+                background: #fff;
+                color: #000;
+            }
+            .background-effects,
+            .download-section,
+            .nav {
+                display: none !important;
+            }
+            .phase {
+                break-inside: avoid;
+                border: 1px solid #ddd;
+                box-shadow: none;
+            }
+            .phase::before {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        /* ==========================================================================
+           RESPONSIVE
+           ========================================================================== */
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--spacing-md);
+            }
+            .phase {
+                padding: var(--spacing-lg);
+            }
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+            .matrix-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-effects">
+        <div class="grid-lines"></div>
+    </div>
+
+    <div class="container">
+        <!-- HERO -->
+        <header class="hero">
+            <div class="hero__badge">
+                <span>📊</span>
+                <span>Metodología CRISP-DM</span>
+            </div>
+            <h1 class="hero__title">Mapa de Ruta <span>Completo</span></h1>
+            <p class="hero__subtitle">Proyecto Titanic — Análisis de Clasificación de Supervivencia</p>
+        </header>
+
+        <!-- NAVIGATION -->
+        <nav class="nav">
+            <a href="#phase-1" class="nav__item nav__item--1">1. Comprensión del Negocio</a>
+            <a href="#phase-2" class="nav__item nav__item--2">2. Comprensión de Datos</a>
+            <a href="#phase-3" class="nav__item nav__item--3">3. Limpieza de Datos</a>
+            <a href="#phase-4" class="nav__item nav__item--4">4. IA / Data Mining</a>
+            <a href="#phase-5" class="nav__item nav__item--5">5. Evaluación</a>
+            <a href="#phase-6" class="nav__item nav__item--6">6. Matriz de Confusión</a>
+        </nav>
+
+        <!-- PHASE 1 -->
+        <section id="phase-1" class="phase phase--1">
+            <div class="phase__header">
+                <div class="phase__number">1</div>
+                <h2 class="phase__title">Comprensión del Negocio</h2>
+            </div>
+
+            <div class="phase__description">
+                El dataset del Titanic contiene información de <strong>891 pasajeros</strong> del famoso naufragio. 
+                El objetivo es predecir si un pasajero sobrevivió o no (variable <code>sobreviviente</code>: 0 = no sobrevivió, 1 = sobrevivió) 
+                a partir de características personales y del viaje. Es un <strong>problema de clasificación binaria supervisada</strong>.
+            </div>
+
+            <div class="items-grid">
+                <div class="item">
+                    <div class="item__icon">🎯</div>
+                    <div class="item__content">
+                        <div class="item__title">Objetivo</div>
+                        <div class="item__text">Predecir supervivencia de pasajeros (0/1)</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="item__icon">📋</div>
+                    <div class="item__content">
+                        <div class="item__title">Variable Objetivo</div>
+                        <div class="item__text">Survived / sobreviviente (etiqueta de clase)</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="item__icon">📊</div>
+                    <div class="item__content">
+                        <div class="item__title">Dataset</div>
+                        <div class="item__text">891 pasajeros × 12 variables</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="item__icon">🏷️</div>
+                    <div class="item__content">
+                        <div class="item__title">Tipo de Problema</div>
+                        <div class="item__text">Clasificación binaria supervisada</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection" style="margin-top: var(--spacing-xl);">
+                <div class="subsection__title">Variables del Dataset Original</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">📝</div>
+                        <div class="item__content">
+                            <div class="item__title">Variables Categóricas</div>
+                            <div class="item__text">Pclass, Name, Sex, Ticket, Embarked, Cabin</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🔢</div>
+                        <div class="item__content">
+                            <div class="item__title">Variables Numéricas</div>
+                            <div class="item__text">Age, SibSp, Parch, Fare, Survived</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tags">
+                <span class="tag">Clasificación</span>
+                <span class="tag">Binaria</span>
+                <span class="tag">Supervisado</span>
+                <span class="tag">891 ejemplos</span>
+            </div>
+        </section>
+
+        <!-- PHASE 2 -->
+        <section id="phase-2" class="phase phase--2">
+            <div class="phase__header">
+                <div class="phase__number">2</div>
+                <h2 class="phase__title">Comprensión de los Datos</h2>
+            </div>
+
+            <div class="phase__description">
+                Objetivo: conocer la estructura, calidad, distribuciones y relaciones del dataset. 
+                Se cargan los datos, se exploran estructuralmente y se construye un diccionario de datos completo.
+            </div>
+
+            <!-- 2.1 Librerías -->
+            <div class="subsection">
+                <div class="subsection__title">2.1 Librerías Importadas</div>
+                <div class="code-block">
+                    <code>pandas, numpy, matplotlib, seaborn, plotly.express, plotly.figure_factory<br>
+sklearn: train_test_split, accuracy_score, precision_score, recall_score, f1_score<br>
+sklearn: DecisionTreeClassifier, LogisticRegression, GaussianNB, RandomForestClassifier, SVC, KNN<br>
+imblearn: RandomOverSampler</code>
+                </div>
+            </div>
+
+            <!-- 2.2 Carga -->
+            <div class="subsection">
+                <div class="subsection__title">2.2 Carga del Dataset</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">📥</div>
+                        <div class="item__content">
+                            <div class="item__title">Fuente</div>
+                            <div class="item__text">URL pública de GitHub (datasciencedojo)</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🔄</div>
+                        <div class="item__content">
+                            <div class="item__title">Renombrado</div>
+                            <div class="item__text">Columnas traducidas al español: pasajeroId, sobreviviente, clase, nombre, sexo, edad, etc.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.3 Exploración -->
+            <div class="subsection">
+                <div class="subsection__title">2.3 Exploración Estructural</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">📐</div>
+                        <div class="item__content">
+                            <div class="item__title">df.shape</div>
+                            <div class="item__text">891 filas × 12 columnas</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">👀</div>
+                        <div class="item__content">
+                            <div class="item__title">head() / tail()</div>
+                            <div class="item__text">Visualizar primeros y últimos registros</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🔧</div>
+                        <div class="item__content">
+                            <div class="item__title">display.precision</div>
+                            <div class="item__text">Ajuste de decimales a 2</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.4 Partición -->
+            <div class="subsection">
+                <div class="subsection__title">2.4 Partición del Dataset</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">✂️</div>
+                        <div class="item__content">
+                            <div class="item__title">Train/Test Split</div>
+                            <div class="item__text">80% entrenamiento (712 ejemplos), 20% prueba</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🎲</div>
+                        <div class="item__content">
+                            <div class="item__title">Parámetros</div>
+                            <div class="item__text">test_size=0.2, random_state=1</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.5-2.8 Análisis -->
+            <div class="subsection">
+                <div class="subsection__title">2.5-2.8 Análisis de Datos</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">📖</div>
+                        <div class="item__content">
+                            <div class="item__title">Diccionario de Datos</div>
+                            <div class="item__text">Nombre, tipo (ordinal/nominal/entero/real), min, max, frecuencias, nulos</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🔍</div>
+                        <div class="item__content">
+                            <div class="item__title">dtypes</div>
+                            <div class="item__text">Inspección del tipo de cada columna</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">📊</div>
+                        <div class="item__content">
+                            <div class="item__title">describe()</div>
+                            <div class="item__text">Media, std, min, cuartiles, max para numéricas</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🏷️</div>
+                        <div class="item__content">
+                            <div class="item__title">nunique() / unique()</div>
+                            <div class="item__text">Categorías únicas por variable</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.9 Visualizaciones -->
+            <div class="subsection">
+                <div class="subsection__title">2.9 Visualizaciones (Gráficos Utilizados)</div>
+                <div class="viz-list">
+                    <div class="viz-item">
+                        <div class="viz-item__title">📦 Boxplot — Edad</div>
+                        <div class="viz-item__desc">px.box() — Distribución de edad y valores atípicos</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-item__title">📦 Boxplot — Edad por Supervivencia</div>
+                        <div class="viz-item__desc">Comparación de distribución por clase de supervivencia</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-item__title">📦 Boxplot — Edad por Sexo</div>
+                        <div class="viz-item__desc">Cruce de edades por sexo y supervivencia</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-item__title">📊 Barras — Sexo</div>
+                        <div class="viz-item__desc">groupby('sexo').plot(kind='bar') con etiquetas</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-item__title">📊 Barras Apiladas — Supervivencia</div>
+                        <div class="viz-item__desc">Distribución de supervivencia dentro de cada sexo</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-item__title">📊 Barras Plotly Interactivo</div>
+                        <div class="viz-item__desc">px.bar() — Supervivencia por sexo interactivo</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-item__title">📍 Strip Plot — Edad vs Sexo</div>
+                        <div class="viz-item__desc">px.strip() — Puntos de edad separados por sexo</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-item__title">⚫ Scatter — Edad vs Tarifa</div>
+                        <div class="viz-item__desc">px.scatter() con facetas por sexo y clase</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-item__title">🔲 Scatter Matrix</div>
+                        <div class="viz-item__desc">px.scatter_matrix() — Matriz de dispersión</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-item__title">👁️ Pairplot Completo</div>
+                        <div class="viz-item__desc">sns.pairplot() — Todas las variables numéricas</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-item__title">👁️ Pairplot con Hue</div>
+                        <div class="viz-item__desc">Versión con colores por supervivencia</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-item__title">📍 Stripplot Seaborn</div>
+                        <div class="viz-item__desc">sns.stripplot() con jitter y dodge</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-item__title">📊 Tabla Contingencia</div>
+                        <div class="viz-item__desc">pd.crosstab() con gradiente de color</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-item__title">📈 Frecuencias por Categoría</div>
+                        <div class="viz-item__desc">value_counts() con conteo y porcentaje</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.10 Correlación -->
+            <div class="subsection">
+                <div class="subsection__title">2.10 Matriz de Correlación de Pearson</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">🔗</div>
+                        <div class="item__content">
+                            <div class="item__title">Heatmap Anotado</div>
+                            <div class="item__text">plotly.figure_factory.create_annotated_heatmap()</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">⚠️</div>
+                        <div class="item__content">
+                            <div class="item__title">Regla</div>
+                            <div class="item__text">Si correlación > 0.7 entre A y B, eliminar una</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tags">
+                    <span class="tag">clase</span>
+                    <span class="tag">edad</span>
+                    <span class="tag">sibSp</span>
+                    <span class="tag">parch</span>
+                    <span class="tag">tarifa</span>
+                    <span class="tag">sobreviviente</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHASE 3 -->
+        <section id="phase-3" class="phase phase--3">
+            <div class="phase__header">
+                <div class="phase__number">3</div>
+                <h2 class="phase__title">Limpieza de Datos e Ingeniería de Características</h2>
+            </div>
+
+            <div class="phase__description">
+                Proceso de preparación de datos: manejo de valores nulos, codificación de variables categóricas, 
+                balanceo de clases y estandarización para optimizar el rendimiento de los modelos.
+            </div>
+
+            <!-- 3.1 Reducción Cabina -->
+            <div class="subsection">
+                <div class="subsection__title">3.1 Reducción de Dimensionalidad — Cabina</div>
+                <div class="item">
+                    <div class="item__icon">🏠</div>
+                    <div class="item__content">
+                        <div class="item__title">Extracción de letra</div>
+                        <div class="item__text">df.cabina.str.slice(0, 1) → Nueva variable Cabin_letter</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.2-3.4 Nulos -->
+            <div class="subsection">
+                <div class="subsection__title">3.2-3.4 Manejo de Valores Nulos</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">🔍</div>
+                        <div class="item__content">
+                            <div class="item__title">Identificar Nulos</div>
+                            <div class="item__text">isnull() para detectar campos faltantes</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🔢</div>
+                        <div class="item__content">
+                            <div class="item__title">Numéricas → Media por Clase</div>
+                            <div class="item__text">limpiar_columnas_numericas(): IQR, extremos con factor 1.58, media por clase</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">📝</div>
+                        <div class="item__content">
+                            <div class="item__title">Categóricas → Moda por Clase</div>
+                            <div class="item__text">limpiar_columnas_categoricas(): moda de cada clase</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tags">
+                    <span class="tag">edad</span>
+                    <span class="tag">tarifa</span>
+                    <span class="tag">sexo</span>
+                    <span class="tag">Cabin_letter</span>
+                    <span class="tag">embarcado</span>
+                </div>
+            </div>
+
+            <!-- 3.5 Eliminar -->
+            <div class="subsection">
+                <div class="subsection__title">3.5 Eliminar Columnas Irrelevantes</div>
+                <div class="item">
+                    <div class="item__icon">❌</div>
+                    <div class="item__content">
+                        <div class="item__title">eliminar_columnas()</div>
+                        <div class="item__text">Se eliminan: pasajeroId, nombre, boleto, cabina (no aportan valor predictivo)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.6 Balance -->
+            <div class="subsection">
+                <div class="subsection__title">3.6 Verificar Balance de Clases</div>
+                <div class="item">
+                    <div class="item__icon">⚖️</div>
+                    <div class="item__content">
+                        <div class="item__title">crearBarras()</div>
+                        <div class="item__text">Gráfico de barras matplotlib para visualizar distribución de clases</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.7 Encoding -->
+            <div class="subsection">
+                <div class="subsection__title">3.7 Codificación de Variables Categóricas</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">📊</div>
+                        <div class="item__content">
+                            <div class="item__title">Ordinales → map()</div>
+                            <div class="item__text">Cabin_letter con orden: A, B, C, D, E, F, G, T</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🔄</div>
+                        <div class="item__content">
+                            <div class="item__title">Nominales → One-Hot</div>
+                            <div class="item__text">pd.get_dummies() → sexo_female, sexo_male</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🏷️</div>
+                        <div class="item__content">
+                            <div class="item__title">cat.codes</div>
+                            <div class="item__text">astype('category').cat.codes → embarcado a embarque</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.8 Label Encoder -->
+            <div class="subsection">
+                <div class="subsection__title">3.8 Label Encoder — Variable Objetivo</div>
+                <div class="item">
+                    <div class="item__icon">🎯</div>
+                    <div class="item__content">
+                        <div class="item__title">LabelEncoder()</div>
+                        <div class="item__text">sklearn.preprocessing para transformar sobreviviente a numérico</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.9 Oversampling -->
+            <div class="subsection">
+                <div class="subsection__title">3.9 Aumento de Datos — RandomOverSampler</div>
+                <div class="item">
+                    <div class="item__icon">📈</div>
+                    <div class="item__content">
+                        <div class="item__title">imblearn.RandomOverSampler()</div>
+                        <div class="item__text">Balanceo de clases generando X_train_res, y_train_res, X_test_res, y_test_res</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3.10 Estandarización -->
+            <div class="subsection">
+                <div class="subsection__title">3.10 Estandarización (para KNN)</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">📏</div>
+                        <div class="item__content">
+                            <div class="item__title">StandardScaler()</div>
+                            <div class="item__text">Solo sobre variables numéricas, no sobre dummies</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🔧</div>
+                        <div class="item__content">
+                            <div class="item__title">Reconstrucción</div>
+                            <div class="item__text">Variables escaladas + dummies concatenadas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHASE 4 -->
+        <section id="phase-4" class="phase phase--4">
+            <div class="phase__header">
+                <div class="phase__number">4</div>
+                <h2 class="phase__title">IA / Data Mining (Modelado)</h2>
+            </div>
+
+            <div class="phase__description">
+                Entrenamiento y comparación de múltiples modelos de clasificación. Se aplican técnicas de 
+                ajuste de hiperparámetros, selección de características y reducción de dimensionalidad.
+            </div>
+
+            <!-- Modelos -->
+            <div class="subsection">
+                <div class="subsection__title">Modelos de Clasificación</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">🌳</div>
+                        <div class="item__content">
+                            <div class="item__title">Árbol de Decisión</div>
+                            <div class="item__text">DecisionTreeClassifier(criterion='entropy'). Visualización con export_graphviz. Importancia de atributos con feature_importances_</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">📈</div>
+                        <div class="item__content">
+                            <div class="item__title">Naive Bayes Gaussiano</div>
+                            <div class="item__text">GaussianNB() con SelectKBest(k=5) para selección de las 5 mejores características</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">👥</div>
+                        <div class="item__content">
+                            <div class="item__title">K-Nearest Neighbors</div>
+                            <div class="item__text">KNeighborsClassifier(n_neighbors=5). Requiere estandarización previa</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🌲</div>
+                        <div class="item__content">
+                            <div class="item__title">Random Forest</div>
+                            <div class="item__text">RandomForestClassifier(n_estimators=15, criterion='entropy', random_state=0)</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">📐</div>
+                        <div class="item__content">
+                            <div class="item__title">SVM Lineal</div>
+                            <div class="item__text">SVC(kernel='linear')</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🔵</div>
+                        <div class="item__content">
+                            <div class="item__title">Kernel SVM (RBF)</div>
+                            <div class="item__text">SVC(kernel='rbf'). gamma controla ancho del kernel, C es regularización</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ajuste Hiperparámetros -->
+            <div class="subsection">
+                <div class="subsection__title">Ajuste de Hiperparámetros</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">🔧</div>
+                        <div class="item__content">
+                            <div class="item__title">GridSearchCV — Árbol</div>
+                            <div class="item__text">max_depth: [2,4,5,7,9,10], criterion: ["gini","entropy","log_loss"]</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🎲</div>
+                        <div class="item__content">
+                            <div class="item__title">RandomizedSearchCV — KNN</div>
+                            <div class="item__text">n_neighbors: range(1,8), weights: ["distance","uniform"]</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Funciones -->
+            <div class="subsection">
+                <div class="subsection__title">Funciones Auxiliares</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">⚙️</div>
+                        <div class="item__content">
+                            <div class="item__title">construir_modelo()</div>
+                            <div class="item__text">Entrena, predice, calcula métricas y retorna matriz de confusión</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">📊</div>
+                        <div class="item__content">
+                            <div class="item__title">compare_results()</div>
+                            <div class="item__text">Imprime resultados de todos los modelos en formato comparativo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PCA -->
+            <div class="subsection">
+                <div class="subsection__title">Reducción de Dimensionalidad</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">📉</div>
+                        <div class="item__content">
+                            <div class="item__title">PCA</div>
+                            <div class="item__text">PCA(n_components=2). Loadings para interpretar influencia de variables</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">⭐</div>
+                        <div class="item__content">
+                            <div class="item__title">SelectKBest</div>
+                            <div class="item__text">Selección de las k características más informativas</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-block">
+                    <code>💡 Si el dataset es mixto (numéricas + categóricas), usar FAMD (Factor Analysis of Mixed Data)</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHASE 5 -->
+        <section id="phase-5" class="phase phase--5">
+            <div class="phase__header">
+                <div class="phase__number">5</div>
+                <h2 class="phase__title">Evaluación</h2>
+            </div>
+
+            <div class="phase__description">
+                Métricas de evaluación calculadas con sklearn.metrics para medir el rendimiento de los modelos 
+                de clasificación en datos de prueba y mediante validación cruzada.
+            </div>
+
+            <div class="items-grid">
+                <div class="item">
+                    <div class="item__icon">✅</div>
+                    <div class="item__content">
+                        <div class="item__title">Accuracy (Exactitud)</div>
+                        <div class="item__text">accuracy_score(y_true, y_pred, normalize=True) — Proporción de predicciones correctas sobre el total</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="item__icon">🎯</div>
+                    <div class="item__content">
+                        <div class="item__title">Precision</div>
+                        <div class="item__text">precision_score() — De los predichos como sobrevivientes, cuántos realmente sobrevivieron</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="item__icon">📊</div>
+                    <div class="item__content">
+                        <div class="item__title">Recall (Sensibilidad)</div>
+                        <div class="item__text">recall_score() — De los que sí sobrevivieron, cuántos fueron detectados correctamente</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="item__icon">⚡</div>
+                    <div class="item__content">
+                        <div class="item__title">F1-Score</div>
+                        <div class="item__text">f1_score(average='macro') — Balance armónico entre precision y recall</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="item__icon">📋</div>
+                    <div class="item__content">
+                        <div class="item__title">Classification Report</div>
+                        <div class="item__text">classification_report() — Todas las métricas por clase en un reporte</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="item__icon">🔄</div>
+                    <div class="item__content">
+                        <div class="item__title">Validación Cruzada</div>
+                        <div class="item__text">KFold(n_splits=10) + cross_val_score() — Media y std del accuracy en 10 folds</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection" style="margin-top: var(--spacing-xl);">
+                <div class="subsection__title">Función Auxiliar de Métricas</div>
+                <div class="code-block">
+                    <code>obtener_performance_classification(y_true, y_pred)<br>
+→ return {'accuracy': ..., 'precision': ..., 'recall': ..., 'f1_score': ...}</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHASE 6 -->
+        <section id="phase-6" class="phase phase--6">
+            <div class="phase__header">
+                <div class="phase__number">6</div>
+                <h2 class="phase__title">Matriz de Confusión</h2>
+            </div>
+
+            <div class="phase__description">
+                La matriz de confusión se genera con <code>confusion_matrix(y_test_res, y_pred)</code> de sklearn.metrics.
+                Tiene cuatro celdas que representan los tipos de predicciones. A partir de estas se derivan todas las métricas de evaluación.
+            </div>
+
+            <div class="matrix-grid">
+                <div class="matrix-cell matrix-cell--tp">
+                    <div class="matrix-cell__icon">✅</div>
+                    <div class="matrix-cell__label">Verdaderos Positivos (VP/TP)</div>
+                    <div class="matrix-cell__desc">Predijo sobrevivió y SÍ sobrevivió</div>
+                </div>
+                <div class="matrix-cell matrix-cell--fp">
+                    <div class="matrix-cell__icon">❌</div>
+                    <div class="matrix-cell__label">Falsos Positivos (FP)</div>
+                    <div class="matrix-cell__desc">Predijo sobrevivió pero NO sobrevivió</div>
+                </div>
+                <div class="matrix-cell matrix-cell--fn">
+                    <div class="matrix-cell__icon">❌</div>
+                    <div class="matrix-cell__label">Falsos Negativos (FN)</div>
+                    <div class="matrix-cell__desc">Predijo NO sobrevivió pero SÍ sobrevivió</div>
+                </div>
+                <div class="matrix-cell matrix-cell--tn">
+                    <div class="matrix-cell__icon">✅</div>
+                    <div class="matrix-cell__label">Verdaderos Negativos (VN/TN)</div>
+                    <div class="matrix-cell__desc">Predijo NO sobrevivió y NO sobrevivió</div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection__title">Derivación de Métricas</div>
+                <div class="code-block">
+                    <code>
+Accuracy = (VP + VN) / (VP + VN + FP + FN)<br>
+Precision = VP / (VP + FP)<br>
+Recall = VP / (VP + FN)<br>
+F1-Score = 2 × (Precision × Recall) / (Precision + Recall)
+                    </code>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection__title">Visualización Alternativa</div>
+                <div class="item">
+                    <div class="item__icon">📊</div>
+                    <div class="item__content">
+                        <div class="item__title">pd.crosstab()</div>
+                        <div class="item__text">construir_modelo() genera versión con pd.crosstab(pred_results.y_pred, pred_results.y_test) como tabla cruzada</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADICIONAL -->
+        <section class="phase" style="border-left-color: var(--color-accent);">
+            <div class="phase__header">
+                <div class="phase__number" style="background: linear-gradient(135deg, var(--color-accent), #0099cc);">+</div>
+                <h2 class="phase__title">Adicional — Persistencia del Modelo</h2>
+            </div>
+
+            <div class="items-grid">
+                <div class="item">
+                    <div class="item__icon">💾</div>
+                    <div class="item__content">
+                        <div class="item__title">Guardar Modelo</div>
+                        <div class="item__text">joblib.dump(clf, ruta)</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="item__icon">📂</div>
+                    <div class="item__content">
+                        <div class="item__title">Cargar Modelo</div>
+                        <div class="item__text">joblib.load(ruta) — Reutilizar sin reentrenar</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOWNLOAD -->
+        <div class="download-section">
+            <button class="download-btn" onclick="window.print()">
+                🖨️ Imprimir / Guardar como PDF
+            </button>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p class="footer__text">
+                📊 Caso de Estudio: <span class="footer__accent">Titanic</span> — Metodología CRISP-DM<br>
+                Mapa de Ruta Completo para Análisis de Machine Learning
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
