@@ -29,7 +29,7 @@ Este proyecto presenta un **mapa de ruta interactivo** para el análisis de dato
 - **Metodología:** CRISP-DM (6 fases)
 - **Interactividad:** Navegación por fases, visualización de matrices y métricas
 
-
+---
 
 ## 🔧 **Stack Tecnológico**
 
@@ -84,4 +84,5 @@ Estudiante de Ingeniería de Sistemas – Universidad del Quindío
 
 <br> <a href="https://github.com/santiagoarbelaezc"> <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" /> </a> <img width="10" /> <a href="https://www.linkedin.com/in/santiago-arbelaez-contreras-9830b5290/"> <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" /> </a> <img width="10" /> <a href="https://portfolio-santiagoa.web.app/portfolio"> <img src="https://img.shields.io/badge/Portfolio-6C63FF?style=for-the-badge&logo=sparkles&logoColor=white" /> </a></div>
 <div align="center"> <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=90&section=footer&animation=fadeIn" /> </div>
+
 
