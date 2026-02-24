@@ -1,0 +1,132 @@
+Unnamed: 0,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12,Unnamed: 13,Unnamed: 14,Unnamed: 15,Unnamed: 16,Unnamed: 17,Unnamed: 18,Unnamed: 19,Unnamed: 20,Unnamed: 21,Unnamed: 22,Unnamed: 23,Unnamed: 24,Unnamed: 25,Unnamed: 26,Unnamed: 27,Unnamed: 28
+,,,Mapa de Ruta (DataSet del Titanic),,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,Comprension del Negocio,,,,,,,,Comprension de los datos,,,,,,Limpieza y feature engineering,,,,,,Modelamiento y evaluación,,,,,,Bayes
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,"Objetivo: Predecir Supervivencia
+Variable Objetivo: Survived (0/1)",,,,,,,,"Objetivo: conocer estructura, calidad, distribuciones y relaciones.",,,,,,"Identifica si hay nulos isnull
+
+X_completo_training.isnull()",,,,,,"Decision Tree classifer
+
+# Create Decision Tree classifer object
+#verificar si usa Gini o usa entropia
+clf = DecisionTreeClassifier(criterion='entropy')
+# Train Decision Tree Classifer
+clf = clf.fit(X_train_res,y_train_res)",,,,,,"Decision Tree classifer
+
+from sklearn.feature_selection import SelectKBest
+from sklearn.naive_bayes import GaussianNB
+#X = df.drop('sobreviviente', axis=1)
+#Y = df['sobreviviente']
+
+#este es un metodo de seleccion de caracteristicas
+#le da puntaje a cada caracteristica y borra todas las demas
+#excepto las que tienen puntaje mas alto
+
+best=SelectKBest(k=5)
+print (y)
+X_new = best.fit_transform(X_completo_training, y_train)
+selected = best.get_support(indices=True)
+print(selected)
+caracteristicasUsadas =X_completo_training.columns[selected]
+print(caracteristicasUsadas)
+
+# Split dataset in training and test datasets
+#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
+
+gnb = GaussianNB()
+
+# Train classifier
+gnb.fit(X_completo_training[caracteristicasUsadas].values, y_train)
+#se predice con las variables seleccionadas
+y_pred = gnb.predict(X_completo_test[caracteristicasUsadas])
+ #Devuelve la precisión media en los datos y etiquetas de prueba dados.
+print('Precision con el set de prueba: {:.2f}'.format(gnb.score(X_completo_test[caracteristicasUsadas], y_test)))
+print('Se obtiene la precision con el dataset de entrenamiento: {:.2f}'.format(gnb.score(X_completo_training[caracteristicasUsadas], y_train)))
+
+
+puntaje = calcular_validacion_cruzada(gnb, X_completo_training, y_train)
+print (""validacion cruzada"")
+print (f""( {puntaje.mean()}, {puntaje.std()} )"")
+
+#                 ['ingresos', 'ahorros', 'hijos', 'trabajo', 'financiar']
+print(""se hace prediccion"")
+print(gnb.predict([[1000,        4000,     1,       6,         100000]]))
+#Resultado esperado 0-Alquilar, 1-Comprar casa"
+,,Importacion de Librerias,,,,,,,,Obtener la cantidad de filas y columnas del dataframe - shape,,,,,,"Borrar nulos dropna
+
+#X_completo_training =  X_completo_training.dropna()
+#X_completo_training",,,,,,"Calcular la importancia de cada atributo con arbol de decisión
+
+feature_cols = X_train_res.columns
+# se obtiene la importancia de cada atributo a partir del arbol
+print(""for para calcular la importancia de cada atributo"")
+
+# se crea un diccionario
+diccionario = {}
+# tree.feature_importances_ se obtiene la importancia de cada atributo
+#zip  devuelve un iterador de tuplas basado en los objetos iterables
+for name, importance in zip(feature_cols, clf.feature_importances_):
+    diccionario[name] = importance
+
+import operator
+sortedDict = sorted(diccionario.items(), key=operator.itemgetter(1))
+
+sortedDict",,,,,,"Calcular la importancia de cada atributo con arbol de decisión
+
+feature_cols = X_train_res.columns
+# se obtiene la importancia de cada atributo a partir del arbol
+print(""for para calcular la importancia de cada atributo"")
+
+# se crea un diccionario
+diccionario = {}
+# tree.feature_importances_ se obtiene la importancia de cada atributo
+#zip  devuelve un iterador de tuplas basado en los objetos iterables
+for name, importance in zip(feature_cols, clf.feature_importances_):
+    diccionario[name] = importance
+
+import operator
+sortedDict = sorted(diccionario.items(), key=operator.itemgetter(1))
+
+sortedDict"
+,,,,,,,,,,"Obtener la cabecera del dataframe - head
+
+Es ver las primeras filas de una tabla de datos para tener una idea rápida de su contenido y estructura sin abrir el archivo completo.",,,,,,"Limpiar columnas numericas, Rellenar vacios por media de la misma clase",,,,,,"Matriz de confusión
+
+# matriz de confusion
+from sklearn.metrics import confusion_matrix
+print(confusion_matrix(y_test_res, y_pred))",,,,,,"Matriz de confusión
+
+# matriz de confusion
+from sklearn.metrics import confusion_matrix
+print(confusion_matrix(y_test_res, y_pred))"
+,,,,,,,,,,,,,,,,"Limpiar columnas categoricas, rellenar vacios por moda de la misma clase",,,,,,"Validación cruzada
+
+# se efectúa validación cruzada
+from sklearn import model_selection
+kFold = model_selection.KFold(n_splits=10)
+scoring = 'accuracy'
+puntaje= (model_selection.cross_val_score(clf, X_train, y_train,  scoring = scoring, cv = kFold))
+print (f""( {puntaje.mean()}, {puntaje.std()}"")",,,,,,"Validación cruzada
+
+# se efectúa validación cruzada
+from sklearn import model_selection
+kFold = model_selection.KFold(n_splits=10)
+scoring = 'accuracy'
+puntaje= (model_selection.cross_val_score(clf, X_train, y_train,  scoring = scoring, cv = kFold))
+print (f""( {puntaje.mean()}, {puntaje.std()}"")"
+,,,,,,,,,,,,,,,,Matriz de correlacion de Pearson- etapa de comprensión de los datos,,,,,,"classification_report
+
+
+from sklearn.metrics import classification_report
+print(classification_report(y_test_res, y_pred))",,,,,,"classification_report
+
+
+from sklearn.metrics import classification_report
+print(classification_report(y_test_res, y_pred))"
+,,,,,,,,,,,,,,,,,,,,,,Ajuste de hiperparámetros,,,,,,
+,,,,,,,,,,,,,,,,Eliminar columnas,,,,,,,,,,,,

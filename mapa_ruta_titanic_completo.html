@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa de Ruta Completo — Proyecto Titanic | CRISP-DM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Mapa de Ruta — Proyecto Titanic | CRISP-DM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
         /* ==========================================================================
            VARIABLES Y RESET
@@ -79,7 +81,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
                 radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 35%),
                 radial-gradient(circle at 50% 50%, rgba(var(--color-accent-rgb), 0.015) 0%, transparent 60%);
@@ -87,8 +89,15 @@
         }
 
         @keyframes backgroundShift {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.05); opacity: 1; }
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
         }
 
         .grid-lines {
@@ -97,9 +106,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
             background-size: 100px 100px;
         }
 
@@ -140,8 +149,8 @@
             align-items: center;
             gap: var(--spacing-sm);
             padding: var(--spacing-sm) var(--spacing-md);
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 100px;
             font-size: 0.85rem;
             color: var(--color-gray-light);
@@ -150,8 +159,15 @@
         }
 
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .hero__title {
@@ -172,8 +188,17 @@
         }
 
         @keyframes titleReveal {
-            from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+                filter: blur(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
         }
 
         .hero__subtitle {
@@ -187,8 +212,15 @@
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ==========================================================================
@@ -201,9 +233,9 @@
             flex-wrap: wrap;
             margin-bottom: var(--spacing-3xl);
             padding: var(--spacing-md);
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
             border-radius: var(--radius-lg);
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             animation: fadeInUp 0.8s 0.4s ease forwards;
             opacity: 0;
         }
@@ -211,7 +243,7 @@
         .nav__item {
             padding: var(--spacing-sm) var(--spacing-md);
             background: transparent;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--radius-sm);
             color: var(--color-gray-light);
             font-size: 0.85rem;
@@ -222,18 +254,41 @@
         }
 
         .nav__item:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
             color: var(--color-white);
             transform: translateY(-2px);
         }
 
-        .nav__item--1:hover { border-color: var(--color-phase-1); color: var(--color-phase-1); }
-        .nav__item--2:hover { border-color: var(--color-phase-2); color: var(--color-phase-2); }
-        .nav__item--3:hover { border-color: var(--color-phase-3); color: var(--color-phase-3); }
-        .nav__item--4:hover { border-color: var(--color-phase-4); color: var(--color-phase-4); }
-        .nav__item--5:hover { border-color: var(--color-phase-5); color: var(--color-phase-5); }
-        .nav__item--6:hover { border-color: var(--color-phase-6); color: var(--color-phase-6); }
+        .nav__item--1:hover {
+            border-color: var(--color-phase-1);
+            color: var(--color-phase-1);
+        }
+
+        .nav__item--2:hover {
+            border-color: var(--color-phase-2);
+            color: var(--color-phase-2);
+        }
+
+        .nav__item--3:hover {
+            border-color: var(--color-phase-3);
+            color: var(--color-phase-3);
+        }
+
+        .nav__item--4:hover {
+            border-color: var(--color-phase-4);
+            color: var(--color-phase-4);
+        }
+
+        .nav__item--5:hover {
+            border-color: var(--color-phase-5);
+            color: var(--color-phase-5);
+        }
+
+        .nav__item--6:hover {
+            border-color: var(--color-phase-6);
+            color: var(--color-phase-6);
+        }
 
         /* ==========================================================================
            PHASE SECTIONS
@@ -241,8 +296,8 @@
         .phase {
             margin-bottom: var(--spacing-3xl);
             padding: var(--spacing-2xl);
-            background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: var(--radius-lg);
             position: relative;
             overflow: hidden;
@@ -250,9 +305,9 @@
         }
 
         .phase:hover {
-            border-color: rgba(255,255,255,0.15);
+            border-color: rgba(255, 255, 255, 0.15);
             transform: translateY(-4px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
         .phase::before {
@@ -265,12 +320,29 @@
             border-radius: 4px 0 0 4px;
         }
 
-        .phase--1::before { background: linear-gradient(180deg, var(--color-phase-1), #00b4d8); }
-        .phase--2::before { background: linear-gradient(180deg, var(--color-phase-2), #e67e22); }
-        .phase--3::before { background: linear-gradient(180deg, var(--color-phase-3), #8e44ad); }
-        .phase--4::before { background: linear-gradient(180deg, var(--color-phase-4), #2ecc71); }
-        .phase--5::before { background: linear-gradient(180deg, var(--color-phase-5), #c0392b); }
-        .phase--6::before { background: linear-gradient(180deg, var(--color-phase-6), #f39c12); }
+        .phase--1::before {
+            background: linear-gradient(180deg, var(--color-phase-1), #00b4d8);
+        }
+
+        .phase--2::before {
+            background: linear-gradient(180deg, var(--color-phase-2), #e67e22);
+        }
+
+        .phase--3::before {
+            background: linear-gradient(180deg, var(--color-phase-3), #8e44ad);
+        }
+
+        .phase--4::before {
+            background: linear-gradient(180deg, var(--color-phase-4), #2ecc71);
+        }
+
+        .phase--5::before {
+            background: linear-gradient(180deg, var(--color-phase-5), #c0392b);
+        }
+
+        .phase--6::before {
+            background: linear-gradient(180deg, var(--color-phase-6), #f39c12);
+        }
 
         .phase__header {
             display: flex;
@@ -278,7 +350,7 @@
             gap: var(--spacing-md);
             margin-bottom: var(--spacing-xl);
             padding-bottom: var(--spacing-lg);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .phase__number {
@@ -294,12 +366,30 @@
             flex-shrink: 0;
         }
 
-        .phase--1 .phase__number { background: linear-gradient(135deg, var(--color-phase-1), #00b4d8); }
-        .phase--2 .phase__number { background: linear-gradient(135deg, var(--color-phase-2), #e67e22); }
-        .phase--3 .phase__number { background: linear-gradient(135deg, var(--color-phase-3), #8e44ad); }
-        .phase--4 .phase__number { background: linear-gradient(135deg, var(--color-phase-4), #2ecc71); }
-        .phase--5 .phase__number { background: linear-gradient(135deg, var(--color-phase-5), #c0392b); }
-        .phase--6 .phase__number { background: linear-gradient(135deg, var(--color-phase-6), #f39c12); color: var(--color-black); }
+        .phase--1 .phase__number {
+            background: linear-gradient(135deg, var(--color-phase-1), #00b4d8);
+        }
+
+        .phase--2 .phase__number {
+            background: linear-gradient(135deg, var(--color-phase-2), #e67e22);
+        }
+
+        .phase--3 .phase__number {
+            background: linear-gradient(135deg, var(--color-phase-3), #8e44ad);
+        }
+
+        .phase--4 .phase__number {
+            background: linear-gradient(135deg, var(--color-phase-4), #2ecc71);
+        }
+
+        .phase--5 .phase__number {
+            background: linear-gradient(135deg, var(--color-phase-5), #c0392b);
+        }
+
+        .phase--6 .phase__number {
+            background: linear-gradient(135deg, var(--color-phase-6), #f39c12);
+            color: var(--color-black);
+        }
 
         .phase__title {
             font-size: 1.5rem;
@@ -313,9 +403,9 @@
             line-height: 1.7;
             margin-bottom: var(--spacing-xl);
             padding: var(--spacing-md);
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
             border-radius: var(--radius-sm);
-            border-left: 3px solid rgba(255,255,255,0.1);
+            border-left: 3px solid rgba(255, 255, 255, 0.1);
         }
 
         /* ==========================================================================
@@ -357,15 +447,15 @@
             align-items: flex-start;
             gap: var(--spacing-md);
             padding: var(--spacing-md);
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: var(--radius-sm);
             transition: var(--transition-normal);
         }
 
         .item:hover {
-            background: rgba(255,255,255,0.04);
-            border-color: rgba(255,255,255,0.12);
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.12);
             transform: translateX(4px);
         }
 
@@ -377,7 +467,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: var(--radius-sm);
         }
 
@@ -403,7 +493,7 @@
            ========================================================================== */
         .code-block {
             background: var(--color-black-lighter);
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: var(--radius-sm);
             padding: var(--spacing-md);
             margin: var(--spacing-md) 0;
@@ -428,8 +518,8 @@
 
         .tag {
             padding: var(--spacing-xs) var(--spacing-sm);
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 100px;
             font-size: 0.75rem;
             color: var(--color-gray-light);
@@ -504,8 +594,8 @@
 
         .viz-item {
             padding: var(--spacing-md);
-            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: var(--radius-sm);
             transition: var(--transition-normal);
         }
@@ -534,7 +624,7 @@
         .footer {
             text-align: center;
             padding: var(--spacing-3xl) 0;
-            border-top: 1px solid rgba(255,255,255,0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
             margin-top: var(--spacing-3xl);
         }
 
@@ -584,16 +674,19 @@
                 background: #fff;
                 color: #000;
             }
+
             .background-effects,
             .download-section,
             .nav {
                 display: none !important;
             }
+
             .phase {
                 break-inside: avoid;
                 border: 1px solid #ddd;
                 box-shadow: none;
             }
+
             .phase::before {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
@@ -607,18 +700,22 @@
             .container {
                 padding: var(--spacing-md);
             }
+
             .phase {
                 padding: var(--spacing-lg);
             }
+
             .items-grid {
                 grid-template-columns: 1fr;
             }
+
             .matrix-grid {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="background-effects">
         <div class="grid-lines"></div>
@@ -631,7 +728,7 @@
                 <span>📊</span>
                 <span>Metodología CRISP-DM</span>
             </div>
-            <h1 class="hero__title">Mapa de Ruta <span>Completo</span></h1>
+            <h1 class="hero__title">Mapa de <span>Ruta</span></h1>
             <p class="hero__subtitle">Proyecto Titanic — Análisis de Clasificación de Supervivencia</p>
         </header>
 
@@ -653,38 +750,40 @@
             </div>
 
             <div class="phase__description">
-                El dataset del Titanic contiene información de <strong>891 pasajeros</strong> del famoso naufragio. 
-                El objetivo es predecir si un pasajero sobrevivió o no (variable <code>sobreviviente</code>: 0 = no sobrevivió, 1 = sobrevivió) 
-                a partir de características personales y del viaje. Es un <strong>problema de clasificación binaria supervisada</strong>.
+                El dataset del Titanic contiene información de <strong>891 pasajeros</strong> del famoso naufragio.
+                El objetivo principal es <strong>predecir la supervivencia</strong> de los pasajeros y determinar qué
+                factores (clase, edad, sexo, etc.) influyeron en su destino.
+                Es un <strong>problema de clasificación binaria supervisada</strong> bajo la metodología CRISP-DM.
             </div>
 
             <div class="items-grid">
                 <div class="item">
                     <div class="item__icon">🎯</div>
                     <div class="item__content">
-                        <div class="item__title">Objetivo</div>
-                        <div class="item__text">Predecir supervivencia de pasajeros (0/1)</div>
+                        <div class="item__title">Objetivo Principal</div>
+                        <div class="item__text">Predecir Supervivencia (Survived: 0/1) y encontrar patrones
+                            determinantes.</div>
                     </div>
                 </div>
                 <div class="item">
                     <div class="item__icon">📋</div>
                     <div class="item__content">
                         <div class="item__title">Variable Objetivo</div>
-                        <div class="item__text">Survived / sobreviviente (etiqueta de clase)</div>
+                        <div class="item__text"><code>Survived</code> (sobreviviente): Variable binaria de clase.</div>
                     </div>
                 </div>
                 <div class="item">
                     <div class="item__icon">📊</div>
                     <div class="item__content">
-                        <div class="item__title">Dataset</div>
-                        <div class="item__text">891 pasajeros × 12 variables</div>
+                        <div class="item__title">Dataset Inicial</div>
+                        <div class="item__text">891 registros × 12 variables (Predictoras y Objetivo).</div>
                     </div>
                 </div>
                 <div class="item">
                     <div class="item__icon">🏷️</div>
                     <div class="item__content">
-                        <div class="item__title">Tipo de Problema</div>
-                        <div class="item__text">Clasificación binaria supervisada</div>
+                        <div class="item__title">Tipo de Análisis</div>
+                        <div class="item__text">Minería de datos con aprendizaje supervisado.</div>
                     </div>
                 </div>
             </div>
@@ -725,7 +824,7 @@
             </div>
 
             <div class="phase__description">
-                Objetivo: conocer la estructura, calidad, distribuciones y relaciones del dataset. 
+                Objetivo: conocer la estructura, calidad, distribuciones y relaciones del dataset.
                 Se cargan los datos, se exploran estructuralmente y se construye un diccionario de datos completo.
             </div>
 
@@ -755,7 +854,8 @@ imblearn: RandomOverSampler</code>
                         <div class="item__icon">🔄</div>
                         <div class="item__content">
                             <div class="item__title">Renombrado</div>
-                            <div class="item__text">Columnas traducidas al español: pasajeroId, sobreviviente, clase, nombre, sexo, edad, etc.</div>
+                            <div class="item__text">Columnas traducidas al español: pasajeroId, sobreviviente, clase,
+                                nombre, sexo, edad, etc.</div>
                         </div>
                     </div>
                 </div>
@@ -769,21 +869,21 @@ imblearn: RandomOverSampler</code>
                         <div class="item__icon">📐</div>
                         <div class="item__content">
                             <div class="item__title">df.shape</div>
-                            <div class="item__text">891 filas × 12 columnas</div>
+                            <div class="item__text">891 filas × 12 columnas (iniciales)</div>
                         </div>
                     </div>
                     <div class="item">
-                        <div class="item__icon">👀</div>
+                        <div class="item__icon">🔍</div>
                         <div class="item__content">
-                            <div class="item__title">head() / tail()</div>
-                            <div class="item__text">Visualizar primeros y últimos registros</div>
+                            <div class="item__title">isnull() check</div>
+                            <div class="item__text">Detección de nulos en 'edad', 'cabina' y 'embarcado'</div>
                         </div>
                     </div>
                     <div class="item">
                         <div class="item__icon">🔧</div>
                         <div class="item__content">
                             <div class="item__title">display.precision</div>
-                            <div class="item__text">Ajuste de decimales a 2</div>
+                            <div class="item__text">Ajuste de decimales a 2 para claridad estadística</div>
                         </div>
                     </div>
                 </div>
@@ -796,15 +896,15 @@ imblearn: RandomOverSampler</code>
                     <div class="item">
                         <div class="item__icon">✂️</div>
                         <div class="item__content">
-                            <div class="item__title">Train/Test Split</div>
-                            <div class="item__text">80% entrenamiento (712 ejemplos), 20% prueba</div>
+                            <div class="item__title">Train Set</div>
+                            <div class="item__text">712 ejemplos (80% para entrenamiento)</div>
                         </div>
                     </div>
                     <div class="item">
                         <div class="item__icon">🎲</div>
                         <div class="item__content">
-                            <div class="item__title">Parámetros</div>
-                            <div class="item__text">test_size=0.2, random_state=1</div>
+                            <div class="item__title">Test Set</div>
+                            <div class="item__text">179 ejemplos (20% para validación)</div>
                         </div>
                     </div>
                 </div>
@@ -818,7 +918,8 @@ imblearn: RandomOverSampler</code>
                         <div class="item__icon">📖</div>
                         <div class="item__content">
                             <div class="item__title">Diccionario de Datos</div>
-                            <div class="item__text">Nombre, tipo (ordinal/nominal/entero/real), min, max, frecuencias, nulos</div>
+                            <div class="item__text">Nombre, tipo (ordinal/nominal/entero/real), min, max, frecuencias,
+                                nulos</div>
                         </div>
                     </div>
                     <div class="item">
@@ -946,18 +1047,29 @@ imblearn: RandomOverSampler</code>
             </div>
 
             <div class="phase__description">
-                Proceso de preparación de datos: manejo de valores nulos, codificación de variables categóricas, 
+                Proceso de preparación de datos: manejo de valores nulos, codificación de variables categóricas,
                 balanceo de clases y estandarización para optimizar el rendimiento de los modelos.
             </div>
 
-            <!-- 3.1 Reducción Cabina -->
+            <!-- 3.1 Ingeniería de Características -->
             <div class="subsection">
-                <div class="subsection__title">3.1 Reducción de Dimensionalidad — Cabina</div>
-                <div class="item">
-                    <div class="item__icon">🏠</div>
-                    <div class="item__content">
-                        <div class="item__title">Extracción de letra</div>
-                        <div class="item__text">df.cabina.str.slice(0, 1) → Nueva variable Cabin_letter</div>
+                <div class="subsection__title">3.1 Ingeniería y Traducción</div>
+                <div class="items-grid">
+                    <div class="item">
+                        <div class="item__icon">🔄</div>
+                        <div class="item__content">
+                            <div class="item__title">Traducción de Columnas</div>
+                            <div class="item__text">Renombrado masivo: Pclass->clase, Sex->sexo, Age->edad,
+                                Fare->tarifa.</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item__icon">🏠</div>
+                        <div class="item__content">
+                            <div class="item__title">Reducción de Cabina</div>
+                            <div class="item__text">df.cabina.str.slice(0, 1) → Variable 'Cabin_letter' (letra inicial).
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -977,7 +1089,8 @@ imblearn: RandomOverSampler</code>
                         <div class="item__icon">🔢</div>
                         <div class="item__content">
                             <div class="item__title">Numéricas → Media por Clase</div>
-                            <div class="item__text">limpiar_columnas_numericas(): IQR, extremos con factor 1.58, media por clase</div>
+                            <div class="item__text">limpiar_columnas_numericas(): IQR, extremos con factor 1.58, media
+                                por clase</div>
                         </div>
                     </div>
                     <div class="item">
@@ -1004,7 +1117,8 @@ imblearn: RandomOverSampler</code>
                     <div class="item__icon">❌</div>
                     <div class="item__content">
                         <div class="item__title">eliminar_columnas()</div>
-                        <div class="item__text">Se eliminan: pasajeroId, nombre, boleto, cabina (no aportan valor predictivo)</div>
+                        <div class="item__text">Se eliminan: pasajeroId, nombre, boleto, cabina (no aportan valor
+                            predictivo)</div>
                     </div>
                 </div>
             </div>
@@ -1016,7 +1130,8 @@ imblearn: RandomOverSampler</code>
                     <div class="item__icon">⚖️</div>
                     <div class="item__content">
                         <div class="item__title">crearBarras()</div>
-                        <div class="item__text">Gráfico de barras matplotlib para visualizar distribución de clases</div>
+                        <div class="item__text">Gráfico de barras matplotlib para visualizar distribución de clases
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1068,7 +1183,8 @@ imblearn: RandomOverSampler</code>
                     <div class="item__icon">📈</div>
                     <div class="item__content">
                         <div class="item__title">imblearn.RandomOverSampler()</div>
-                        <div class="item__text">Balanceo de clases generando X_train_res, y_train_res, X_test_res, y_test_res</div>
+                        <div class="item__text">Balanceo de clases generando X_train_res, y_train_res, X_test_res,
+                            y_test_res</div>
                     </div>
                 </div>
             </div>
@@ -1103,56 +1219,88 @@ imblearn: RandomOverSampler</code>
             </div>
 
             <div class="phase__description">
-                Entrenamiento y comparación de múltiples modelos de clasificación. Se aplican técnicas de 
+                Entrenamiento y comparación de múltiples modelos de clasificación. Se aplican técnicas de
                 ajuste de hiperparámetros, selección de características y reducción de dimensionalidad.
             </div>
 
             <!-- Modelos -->
             <div class="subsection">
-                <div class="subsection__title">Modelos de Clasificación</div>
+                <div class="subsection__title">Modelos y Técnicas Avanzadas</div>
                 <div class="items-grid">
                     <div class="item">
                         <div class="item__icon">🌳</div>
                         <div class="item__content">
-                            <div class="item__title">Árbol de Decisión</div>
-                            <div class="item__text">DecisionTreeClassifier(criterion='entropy'). Visualización con export_graphviz. Importancia de atributos con feature_importances_</div>
+                            <div class="item__title">Árbol de Decisión (Entropy)</div>
+                            <div class="item__text">
+                                <strong>Concepto:</strong> Divide el dataset en subgrupos basados en la ganancia de
+                                información (entropía).<br>
+                                <strong>Resultado:</strong> Accuracy 1.0. Es altamente interpretable pero propenso al
+                                sobreajuste.
+                            </div>
                         </div>
                     </div>
                     <div class="item">
-                        <div class="item__icon">📈</div>
+                        <div class="item__icon">📊</div>
                         <div class="item__content">
-                            <div class="item__title">Naive Bayes Gaussiano</div>
-                            <div class="item__text">GaussianNB() con SelectKBest(k=5) para selección de las 5 mejores características</div>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class="item__icon">👥</div>
-                        <div class="item__content">
-                            <div class="item__title">K-Nearest Neighbors</div>
-                            <div class="item__text">KNeighborsClassifier(n_neighbors=5). Requiere estandarización previa</div>
+                            <div class="item__title">Naive Bayes (Bayesiano)</div>
+                            <div class="item__text">
+                                <strong>Concepto:</strong> Basado en el Teorema de Bayes con la "ingenua" asunción de
+                                independencia entre variables.<br>
+                                <strong>Uso:</strong> <code>GaussianNB()</code> + SelectKBest. Muy rápido y eficiente
+                                para datasets pequeños.
+                            </div>
                         </div>
                     </div>
                     <div class="item">
                         <div class="item__icon">🌲</div>
                         <div class="item__content">
                             <div class="item__title">Random Forest</div>
-                            <div class="item__text">RandomForestClassifier(n_estimators=15, criterion='entropy', random_state=0)</div>
+                            <div class="item__text">
+                                <strong>Concepto:</strong> Un "bosque" de árboles de decisión. Utiliza <i>bagging</i> y
+                                selección aleatoria de atributos para mejorar la estabilidad.<br>
+                                <strong>Ventaja:</strong> Reduce drásticamente el overfitting comparado con un solo
+                                árbol.
+                            </div>
                         </div>
                     </div>
                     <div class="item">
                         <div class="item__icon">📐</div>
                         <div class="item__content">
-                            <div class="item__title">SVM Lineal</div>
-                            <div class="item__text">SVC(kernel='linear')</div>
+                            <div class="item__title">Support Vector Machines (SVM)</div>
+                            <div class="item__text">
+                                <strong>Concepto:</strong> Busca el hiperplano óptimo que maximiza el margen entre las
+                                clases (sobrevivientes vs. no).<br>
+                                <strong>SVM Lineal:</strong> Ideal si los datos son separables por una línea recta.
+                                Accuracy: 0.86.
+                            </div>
                         </div>
                     </div>
                     <div class="item">
                         <div class="item__icon">🔵</div>
                         <div class="item__content">
-                            <div class="item__title">Kernel SVM (RBF)</div>
-                            <div class="item__text">SVC(kernel='rbf'). gamma controla ancho del kernel, C es regularización</div>
+                            <div class="item__title">Kernel SVM (The Kernel Trick)</div>
+                            <div class="item__text">
+                                <strong>Concepto:</strong> Proyecta los datos a dimensiones superiores para separar
+                                datos no lineales.<br>
+                                <strong>Kernel RBF:</strong> Utilizado para detectar fronteras complejas y no lineales.
+                                Accuracy: 0.86.
+                            </div>
                         </div>
                     </div>
+                    <div class="item">
+                        <div class="item__icon">👥</div>
+                        <div class="item__content">
+                            <div class="item__title">K-Nearest Neighbors (K-NN)</div>
+                            <div class="item__text">
+                                <strong>Concepto:</strong> Clasifica basándose en la proximidad (votos de los vecinos
+                                más cercanos).<br>
+                                <strong>Ajuste:</strong> Requiere estandarización crítica de variables. Accuracy: 0.86.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-block">
+                    <code># Ejemplo Modeling Avanzado:<br>clf_rf = RandomForestClassifier(n_estimators=15)<br>clf_svm = SVC(kernel='rbf')<br>clf_nb = GaussianNB()</code>
                 </div>
             </div>
 
@@ -1164,7 +1312,8 @@ imblearn: RandomOverSampler</code>
                         <div class="item__icon">🔧</div>
                         <div class="item__content">
                             <div class="item__title">GridSearchCV — Árbol</div>
-                            <div class="item__text">max_depth: [2,4,5,7,9,10], criterion: ["gini","entropy","log_loss"]</div>
+                            <div class="item__text">max_depth: [2,4,5,7,9,10], criterion: ["gini","entropy","log_loss"]
+                            </div>
                         </div>
                     </div>
                     <div class="item">
@@ -1185,7 +1334,8 @@ imblearn: RandomOverSampler</code>
                         <div class="item__icon">⚙️</div>
                         <div class="item__content">
                             <div class="item__title">construir_modelo()</div>
-                            <div class="item__text">Entrena, predice, calcula métricas y retorna matriz de confusión</div>
+                            <div class="item__text">Entrena, predice, calcula métricas y retorna matriz de confusión
+                            </div>
                         </div>
                     </div>
                     <div class="item">
@@ -1206,7 +1356,8 @@ imblearn: RandomOverSampler</code>
                         <div class="item__icon">📉</div>
                         <div class="item__content">
                             <div class="item__title">PCA</div>
-                            <div class="item__text">PCA(n_components=2). Loadings para interpretar influencia de variables</div>
+                            <div class="item__text">PCA(n_components=2). Loadings para interpretar influencia de
+                                variables</div>
                         </div>
                     </div>
                     <div class="item">
@@ -1231,51 +1382,48 @@ imblearn: RandomOverSampler</code>
             </div>
 
             <div class="phase__description">
-                Métricas de evaluación calculadas con sklearn.metrics para medir el rendimiento de los modelos 
+                Métricas de evaluación calculadas con sklearn.metrics para medir el rendimiento de los modelos
                 de clasificación en datos de prueba y mediante validación cruzada.
             </div>
 
             <div class="items-grid">
                 <div class="item">
-                    <div class="item__icon">✅</div>
+                    <div class="item__icon">🏆</div>
                     <div class="item__content">
-                        <div class="item__title">Accuracy (Exactitud)</div>
-                        <div class="item__text">accuracy_score(y_true, y_pred, normalize=True) — Proporción de predicciones correctas sobre el total</div>
+                        <div class="item__title">Accuracy Perfecta (1.0)</div>
+                        <div class="item__text">Decision Tree y Naive Bayes reportaron 100% de exactitud en este
+                            dataset.</div>
                     </div>
                 </div>
                 <div class="item">
-                    <div class="item__icon">🎯</div>
+                    <div class="item__icon">👥</div>
                     <div class="item__content">
-                        <div class="item__title">Precision</div>
-                        <div class="item__text">precision_score() — De los predichos como sobrevivientes, cuántos realmente sobrevivieron</div>
+                        <div class="item__title">K-NN Performance</div>
+                        <div class="item__text">Accuracy de 0.86 y Precisión de 0.85 con el set de prueba estandarizado.
+                        </div>
                     </div>
                 </div>
                 <div class="item">
-                    <div class="item__icon">📊</div>
+                    <div class="item__icon">🎲</div>
                     <div class="item__content">
-                        <div class="item__title">Recall (Sensibilidad)</div>
-                        <div class="item__text">recall_score() — De los que sí sobrevivieron, cuántos fueron detectados correctamente</div>
+                        <div class="item__title">Hyperparams Best Score</div>
+                        <div class="item__text">RandomizedSearchCV (KNN): ~0.82 con weights='distance' y k=6.</div>
                     </div>
                 </div>
                 <div class="item">
-                    <div class="item__icon">⚡</div>
+                    <div class="item__icon">📉</div>
                     <div class="item__content">
-                        <div class="item__title">F1-Score</div>
-                        <div class="item__text">f1_score(average='macro') — Balance armónico entre precision y recall</div>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="item__icon">📋</div>
-                    <div class="item__content">
-                        <div class="item__title">Classification Report</div>
-                        <div class="item__text">classification_report() — Todas las métricas por clase en un reporte</div>
+                        <div class="item__title">PCA / FAMD</div>
+                        <div class="item__text">Análisis de componentes principales para variables mixtas (numéricas y
+                            dummies).</div>
                     </div>
                 </div>
                 <div class="item">
                     <div class="item__icon">🔄</div>
                     <div class="item__content">
                         <div class="item__title">Validación Cruzada</div>
-                        <div class="item__text">KFold(n_splits=10) + cross_val_score() — Media y std del accuracy en 10 folds</div>
+                        <div class="item__text">Evaluación con 10 Folds para asegurar la robustez del modelo final.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1297,8 +1445,10 @@ imblearn: RandomOverSampler</code>
             </div>
 
             <div class="phase__description">
-                La matriz de confusión se genera con <code>confusion_matrix(y_test_res, y_pred)</code> de sklearn.metrics.
-                Tiene cuatro celdas que representan los tipos de predicciones. A partir de estas se derivan todas las métricas de evaluación.
+                La matriz de confusión se genera con <code>confusion_matrix(y_test_res, y_pred)</code> de
+                sklearn.metrics.
+                Tiene cuatro celdas que representan los tipos de predicciones. A partir de estas se derivan todas las
+                métricas de evaluación.
             </div>
 
             <div class="matrix-grid">
@@ -1342,7 +1492,8 @@ F1-Score = 2 × (Precision × Recall) / (Precision + Recall)
                     <div class="item__icon">📊</div>
                     <div class="item__content">
                         <div class="item__title">pd.crosstab()</div>
-                        <div class="item__text">construir_modelo() genera versión con pd.crosstab(pred_results.y_pred, pred_results.y_test) como tabla cruzada</div>
+                        <div class="item__text">construir_modelo() genera versión con pd.crosstab(pred_results.y_pred,
+                            pred_results.y_test) como tabla cruzada</div>
                     </div>
                 </div>
             </div>
@@ -1351,7 +1502,8 @@ F1-Score = 2 × (Precision × Recall) / (Precision + Recall)
         <!-- ADICIONAL -->
         <section class="phase" style="border-left-color: var(--color-accent);">
             <div class="phase__header">
-                <div class="phase__number" style="background: linear-gradient(135deg, var(--color-accent), #0099cc);">+</div>
+                <div class="phase__number" style="background: linear-gradient(135deg, var(--color-accent), #0099cc);">+
+                </div>
                 <h2 class="phase__title">Adicional — Persistencia del Modelo</h2>
             </div>
 
@@ -1389,4 +1541,5 @@ F1-Score = 2 × (Precision × Recall) / (Precision + Recall)
         </footer>
     </div>
 </body>
+
 </html>
